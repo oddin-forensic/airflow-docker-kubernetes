@@ -1,0 +1,67 @@
+version: '2.1'
+services:
+    postgres:
+        image: postgres
+        environment:
+            - POSTGRES_USER=airflow
+            - POSTGRES_PASSWORD=airflow
+            - POSTGRES_DB=airflow
+    webserver:
+        image: juniorsntsid/airflow-docker
+        restart: always
+        depends_on:
+            - postgres
+        environment:
+            - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
+            - LOAD_EX=n
+            - EXECUTOR=Kubernetes
+            - AIRFLOW__KUBERNETES__WORKER_CONTAINER_IMAGE_PULL_POLICY=Never
+            - AIRFLOW__KUBERNETES__DAGS_VOLUME_CLAIM=airflow
+            - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+            - AIRFLOW__KUBERNETES__IN_CLUSTER=False
+            - AIRFLOW__KUBERNETES__CONFIG_FILE=/usr/local/airflow/config
+            - AIRFLOW__CORE__DAGS_FOLDER=/usr/local/airflow/dags
+            - AIRFLOW__CORE__DAG_DISCOVERY_SAFE_MODE=False
+            - AIRFLOW__CORE__WORKER_SERVICE_ACCOUNT_NAME=admin
+        volumes:
+            - ./dags:/usr/local/airflow/dags
+            - /home/juniordev/.kube/config:/usr/local/airflow/config
+            # Uncomment to include custom plugins
+            # - ./plugins:/usr/local/airflow/plugins
+        ports:
+            - "8080:8080"
+        links:
+          - postgres
+        command: webserver
+        healthcheck:
+            test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+            interval: 30s
+            timeout: 30s
+            retries: 3
+    scheduler:
+        image: juniorsntsid/airflow-docker
+        restart: always
+        depends_on:
+            - webserver
+        volumes:
+            - ./dags:/usr/local/airflow/dags
+            - /home/juniordev/.kube/config:/usr/local/airflow/config
+            # Uncomment to include custom plugins
+            # - ./plugins:/usr/local/airflow/plugins
+        environment:
+            - LOAD_EX=n
+            - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
+            - EXECUTOR=Kubernetes
+            - AIRFLOW__KUBERNETES__WORKER_CONTAINER_IMAGE_PULL_POLICY=Never
+            - AIRFLOW__KUBERNETES__DAGS_VOLUME_CLAIM=airflow
+            - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+            - AIRFLOW__KUBERNETES__IN_CLUSTER=False
+            - AIRFLOW__KUBERNETES__CONFIG_FILE=/usr/local/airflow/config
+            - AIRFLOW__CORE__DAGS_FOLDER=/usr/local/airflow/dags
+            - AIRFLOW__CORE__DAG_DISCOVERY_SAFE_MODE=False
+            - AIRFLOW__CORE__WORKER_SERVICE_ACCOUNT_NAME=admin
+            # - POSTGRES_USER=airflow
+            # - POSTGRES_PASSWORD=airflow
+            # - POSTGRES_DB=airflow
+            # - REDIS_PASSWORD=redispass
+        command: scheduler
