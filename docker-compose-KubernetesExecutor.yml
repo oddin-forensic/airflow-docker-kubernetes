@@ -24,11 +24,13 @@ services:
             - AIRFLOW__CORE__DAGS_FOLDER=/usr/local/airflow/dags
             - AIRFLOW__CORE__DAG_DISCOVERY_SAFE_MODE=False
             # - AIRFLOW__CORE__WORKER_SERVICE_ACCOUNT_NAME=admin
-            - "AIRFLOW__KUBERNETES__KUBE_CLIENT_REQUEST_ARGS={{ _request_timeout: 50 }}"
+            - 'AIRFLOW__KUBERNETES__KUBE_CLIENT_REQUEST_ARGS={ "_request_timeout": [60,60] }'
             # - "AIRFLOW__KUBERNETES__KUBE_CLIENT_REQUEST_ARGS={_request_timeout: 50}"
         volumes:
             - ./dags:/usr/local/airflow/dags
             - /home/juniordev/.kube/config:/usr/local/airflow/config
+            # - ./airflow.cfg:/usr/local/airflow/airflow.cfg
+            # - ./airflow.cfg:/usr/local/airflow/airflow.cfg
             # Uncomment to include custom plugins
             # - ./plugins:/usr/local/airflow/plugins
         ports:
@@ -50,6 +52,8 @@ services:
         volumes:
             - ./dags:/usr/local/airflow/dags
             - /home/juniordev/.kube/config:/usr/local/airflow/config
+            # - ./airflow.cfg:/usr/local/airflow/airflow.cfg
+            # - ./airflow.cfg:/usr/local/airflow/airflow.cfg
             # Uncomment to include custom plugins
             # - ./plugins:/usr/local/airflow/plugins
         environment:
@@ -64,7 +68,7 @@ services:
             - AIRFLOW__CORE__DAGS_FOLDER=/usr/local/airflow/dags
             - AIRFLOW__CORE__DAG_DISCOVERY_SAFE_MODE=False
             # - AIRFLOW__CORE__WORKER_SERVICE_ACCOUNT_NAME=admin
-            - "AIRFLOW__KUBERNETES__KUBE_CLIENT_REQUEST_ARGS={{ _request_timeout: 50 }}"
+            - 'AIRFLOW__KUBERNETES__KUBE_CLIENT_REQUEST_ARGS={ "_request_timeout": [60,60] }'
             # - POSTGRES_USER=airflow
             # - POSTGRES_PASSWORD=airflow
             # - POSTGRES_DB=airflow
