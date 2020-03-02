@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV TERM linux
 
 # Airflow
-ARG AIRFLOW_VERSION=1.10.0
+ARG AIRFLOW_VERSION=1.10.9
 ARG AIRFLOW_HOME=/usr/local/airflow
 ARG AIRFLOW_DEPS=""
 ARG PYTHON_DEPS=""
@@ -52,8 +52,18 @@ RUN set -ex \
     && pip install pytz \
     && pip install pyOpenSSL \
     && pip install ndg-httpsclient \
+    && pip install urllib3>=1.24.2 \
     && pip install pyasn1 \
-    && pip install kubernetes \
+    && pip install kubernetes==11.0.0a1 \
+    && pip install certifi>=14.05.14 \
+    && pip install six>=1.9.0 \
+    && pip install python-dateutil>=2.5.3 \
+    && pip install setuptools>=21.0.0 \
+    && pip install pyyaml>=3.12 \
+    && pip install google-auth>=1.0. \
+    && pip install websocket-client>=0.32.0,!=0.40.0,!=0.41.*,!=0.42.* \
+    && pip install requests \
+    && pip install requests-oauthlib \
     && pip install apache-airflow[crypto,celery,postgres,hive,jdbc,mysql,ssh${AIRFLOW_DEPS:+,}${AIRFLOW_DEPS}] \
     && pip install 'celery[redis]>=4.1.1,<4.2.0' \
     && if [ -n "${PYTHON_DEPS}" ]; then pip install ${PYTHON_DEPS}; fi \
