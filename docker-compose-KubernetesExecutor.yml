@@ -13,24 +13,25 @@ services:
         depends_on:
             - postgres
         environment:
+            - AIRFLOW_HOME=/usr/local/airflow
             - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
             - LOAD_EX=n
             - EXECUTOR=Kubernetes
             - AIRFLOW__KUBERNETES__WORKER_CONTAINER_IMAGE_PULL_POLICY=Never
-            - AIRFLOW__KUBERNETES__DAGS_VOLUME_CLAIM=airflow
+            - AIRFLOW__KUBERNETES__DAGS_VOLUME_CLAIM=airflow-dags
             - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
             - AIRFLOW__KUBERNETES__IN_CLUSTER=False
             - AIRFLOW__KUBERNETES__CONFIG_FILE=/usr/local/airflow/config
             - AIRFLOW__CORE__DAGS_FOLDER=/usr/local/airflow/dags
             - AIRFLOW__CORE__DAG_DISCOVERY_SAFE_MODE=False
             # - AIRFLOW__CORE__WORKER_SERVICE_ACCOUNT_NAME=admin
-            - 'AIRFLOW__KUBERNETES__KUBE_CLIENT_REQUEST_ARGS={ "_request_timeout": [60,60] }'
+            - 'AIRFLOW__KUBERNETES__KUBE_CLIENT_REQUEST_ARGS={ "_request_timeout": 50 }'
             # - "AIRFLOW__KUBERNETES__KUBE_CLIENT_REQUEST_ARGS={_request_timeout: 50}"
         volumes:
             - ./dags:/usr/local/airflow/dags
             - /home/juniordev/.kube/config:/usr/local/airflow/config
             # - ./airflow.cfg:/usr/local/airflow/airflow.cfg
-            # - ./airflow.cfg:/usr/local/airflow/airflow.cfg
+            - ./airflow.cfg:/usr/local/airflow/airflow.cfg
             # Uncomment to include custom plugins
             # - ./plugins:/usr/local/airflow/plugins
         ports:
@@ -53,22 +54,23 @@ services:
             - ./dags:/usr/local/airflow/dags
             - /home/juniordev/.kube/config:/usr/local/airflow/config
             # - ./airflow.cfg:/usr/local/airflow/airflow.cfg
-            # - ./airflow.cfg:/usr/local/airflow/airflow.cfg
+            - ./airflow.cfg:/usr/local/airflow/airflow.cfg
             # Uncomment to include custom plugins
             # - ./plugins:/usr/local/airflow/plugins
         environment:
+            - AIRFLOW_HOME=/usr/local/airflow
             - LOAD_EX=n
             - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
             - EXECUTOR=Kubernetes
             - AIRFLOW__KUBERNETES__WORKER_CONTAINER_IMAGE_PULL_POLICY=Never
-            - AIRFLOW__KUBERNETES__DAGS_VOLUME_CLAIM=airflow
+            # - AIRFLOW__KUBERNETES__DAGS_VOLUME_CLAIM=airflow
             - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
             - AIRFLOW__KUBERNETES__IN_CLUSTER=False
             - AIRFLOW__KUBERNETES__CONFIG_FILE=/usr/local/airflow/config
             - AIRFLOW__CORE__DAGS_FOLDER=/usr/local/airflow/dags
             - AIRFLOW__CORE__DAG_DISCOVERY_SAFE_MODE=False
             # - AIRFLOW__CORE__WORKER_SERVICE_ACCOUNT_NAME=admin
-            - 'AIRFLOW__KUBERNETES__KUBE_CLIENT_REQUEST_ARGS={ "_request_timeout": [60,60] }'
+            - 'AIRFLOW__KUBERNETES__KUBE_CLIENT_REQUEST_ARGS={ "_request_timeout": "50" }'
             # - POSTGRES_USER=airflow
             # - POSTGRES_PASSWORD=airflow
             # - POSTGRES_DB=airflow

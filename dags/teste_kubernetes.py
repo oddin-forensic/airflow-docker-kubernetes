@@ -26,7 +26,8 @@ from airflow.utils.dates import days_ago
 
 args = {
     'owner': 'airflow',
-    'start_date': days_ago(2)
+    'start_date': days_ago(2),
+    'depends_on_past': False
 }
 
 with DAG(
@@ -77,14 +78,15 @@ with DAG(
     # You don't have to use any special KubernetesExecutor configuration if you don't want to
     start_task = PythonOperator(
         task_id="start_task",
-        python_callable=hello
+        python_callable=hello,
+        executor_config={"KubernetesExecutor": {"image": "apache/airflow:master-ci" }}
     )
 
     # But you can if you want to
     one_task = PythonOperator(
         task_id="one_task",
         python_callable=hello,
-        executor_config={"KubernetesExecutor": {"image": "apache/airflow:master-ci"}}
+        executor_config={"KubernetesExecutor": {"image": "apache/airflow:master-ci" }}
     )
 
     # Use the zip binary, which is only found in this special docker image

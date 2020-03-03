@@ -63,6 +63,7 @@ RUN set -ex \
     && pip install google-auth>=1.0. \
     && pip install websocket-client>=0.32.0,!=0.40.0,!=0.41.*,!=0.42.* \
     && pip install requests \
+    && pip install ipaddress>=1.0.17;python_version=="2.7" \
     && pip install requests-oauthlib \
     && pip install apache-airflow[crypto,celery,postgres,hive,jdbc,mysql,ssh${AIRFLOW_DEPS:+,}${AIRFLOW_DEPS}] \
     && pip install 'celery[redis]>=4.1.1,<4.2.0' \
